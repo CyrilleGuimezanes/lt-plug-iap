@@ -521,12 +521,13 @@ public class WizPurchasePlugin extends CordovaPlugin {
 					// Iterate all skus
 					while (requestSkuIter.hasNext()) {
 						for (SkuDetails sku : skuList) {
-							/*if (!sku.getSku().equalsIgnoreCase(requestSkuIter.next()) ) {
+							String nextSku = requestSkuIter.next();
+							if (!sku.getSku().equalsIgnoreCase(nextSku) ) {
 								// If we already have invalid skus add a new line
 								if (!wrongSku.isEmpty())wrongSku += newline;
 								// Add the incorrect sku to our list
-								wrongSku += "sku not found in Google Inventory: " + sku;
-							} else {*/
+								wrongSku += "sku not found in Google Inventory: " + sku.getSku() + " should be equal to: "+ nextSku;
+							} else {
 								if (storeCurrency == null) {
 									try {
 										JSONObject jsonSku = sku.toJson();
@@ -546,10 +547,8 @@ public class WizPurchasePlugin extends CordovaPlugin {
 									skuObject.put("json", sku.toJson());
 									// Add the current sku details to the returning object
 									skusObject.put(sku.getSku(), skuObject);
-								} catch (JSONException e) {
-								Log.d(TAG, "Error in SKU registering!");
+								} catch (JSONException e) { }
 							}
-							//}
 						}
 					}
 					// If we have wrong sku log it out for the developer, this should be enough otherwise a return object should be issue
