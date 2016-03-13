@@ -1,311 +1,249 @@
-Cordova IAP plugin
-====================
+phonegap-plugin-wizPurchase
+===========================
 
-# Overview #
-in app purchase
+A cross-platform mobile application payment API for iOS IAP and Android Billing. 
 
-[android, ios, wp8] [cordova cli] [xdk] [cocoon] [phonegap build service]
+- PhoneGap Version : 3.3
 
-Requires google play developer account https://play.google.com/apps/publish/
-Requires apple developer account https://developer.apple.com/devcenter/ios/index.action
-Requires windows phone developer account https://dev.windowsphone.com/
-wp8 is not yet supported
+** NOTE: Not currently supporting subscriptions **
 
-This is open source cordova plugin.
+***A lot of work from the Android side of this plugin must be credited to @[poiuytrez](https://github.com/poiuytrez)'s [AndroidInAppBilling](https://github.com/poiuytrez/AndroidInAppBilling/) plugin. We re-used some plugin class code and all the utility classes, but replaced a lot of the API to be usable in a cross-platform manner with iOS. Many thanks goes to him for his hard work.***
 
-You can see Plugins For Cordova in one page: http://cranberrygame.github.io?referrer=github
+## Install
 
-cf)construct2
+### via CLI
 
-android: Phonegap IAP or c2 IAP plugin
+	cordova plugin add https://github.com/Wizcorp/phonegap-plugin-wizPurchase --variable BILLING_KEY="YOUR_BILLING_KEY"
 
-blackberry10: c2 IAP plugin (https://www.scirra.com/manual/173/iap)
+### via config.xml
 
-ios: Phonegap IAP or c2 IAP plugin
+	<plugin name="jp.wizcorp.phonegap.plugin.wizPurchase" spec="https://github.com/Wizcorp/phonegap-plugin-wizPurchase">
+	    <variable name="BILLING_KEY" value="YOUR_BILLING_KEY" />
+	</plugin>
 
-windows8: c2 IAP plugin
+You need to specify your billing key **only** if you need Android support.
 
-wp8: Phonegap IAP
+## Setup
 
-# Change log #
-```c
-```
-# Install plugin #
+#### iOS
 
-## Cordova cli ##
-https://cordova.apache.org/docs/en/edge/guide_cli_index.md.html#The%20Command-Line%20Interface - npm install -g cordova@5.0.0
-```c
-cordova plugin add cordova-plugin-payment-iap
-(when build error, use github url: cordova plugin add https://github.com/cranberrygame/cordova-plugin-payment-iap)
-```
+- In iTunes Connect create: your application, any items and an IAP test user (on the main screen see "Manage Users"). 
 
-## Xdk ##
-https://software.intel.com/en-us/intel-xdk - Download XDK - XDK PORJECTS - [specific project] - CORDOVA HYBRID MOBILE APP SETTINGS - Plugin Management - Add Plugins to this Project - Third Party Plugins -
-```c
-Plugin Source: Cordova plugin registry
-Plugin ID: cordova-plugin-payment-iap
-```
+- Test on a real device (not simulator).
 
-## Cocoon ##
-https://cocoon.io - Create project - [specific project] - Setting - Plugins - Custom - Git Url: https://github.com/cranberrygame/cordova-plugin-payment-iap.git - INSTALL - Save<br>
+- Log out of any existing Apple iTunes accounts on the device before testing.
 
-## Phonegap build service (config.xml) ##
-https://build.phonegap.com/ - Apps - [specific project] - Update code - Zip file including config.xml
-```c
-<gap:plugin name="cordova-plugin-payment-iap" source="npm" />
-```
+- Make sure your application has a version number (do not leave it blank).
 
-## Construct2 ##
-Download construct2 plugin<br>
-https://dl.dropboxusercontent.com/u/186681453/pluginsforcordova/index.html<br>
-How to install c2 native plugins in xdk, cocoon and cordova cli<br>
-https://plus.google.com/102658703990850475314/posts/XS5jjEApJYV
+#### Android
 
-# Server setting #
-```c
-```
-## Android ##
-```c
-//if you see this message when trying to add in app product, you must republish the app with Phonegap IAP plugin once in alpha, beta, normal publish (just republish, no iap event coding).
-//if your app is republished with dummy Phonegap IAP plugin, then you can add in app product
-//(See 1.png 2.png 3.png)
-Your app doesn't have any in-app products yet. 
-To add in-app products, you need to add the BILLING permission to your APK.
+- Set `debuggable` to `false` and upload a signed version of you application to the Google Play Developer Console.
 
-//add in app product (nonconsumable)
-google play developer console - [specific app] - in app product - add - managed, product ID: testapp_removeads - Name : Remove Ads, Description: You can purchase remove ads by tapping "Remove Ads" button. And you can also restore previous purchases by tapping "Restore" button. - set active
+- Add items to the Google Play Developer Console.
 
-//add in app product (consumable)
-google play developer console - [specific app] - in app product - add - unmanaged, product ID: testapp_coinpack1 - Name : Coin Pack1 (250 Coins), Description: Coin pack1 (250 Coins) - set active
+- Upload your apk to Alpha or Beta environment.
 
-//add in app product (consumable)
-google play developer console - [specific app] - in app product - add - unmanaged, product ID: testapp_coinpack2 - Name : Coin Pack2 (750 Coins), Description: Coin pack2 (750 Coins) - set active
+- Add your list of test users (Google Group), in the same screen you should see a link ** *1 **
 
-//add in app product (consumable)
-google play developer console - [specific app] - in app product - add - unmanaged, product ID: testapp_coinpack3 - Name : Coin Pack3 (2250 Coins), Description: Coin pack3 (2250 Coins) - set active
+- ** *1 download the application from the link above [important!] **
 
-//get application license key (per app)
-google play developer console - [specific app] - Services & APis - license and in app purchase - get ANDROID_APPLICATION_LICENSE_KEY
-```
-<img src="https://raw.githubusercontent.com/cranberrygame/cordova-plugin-payment-iap/master/doc/android1.png">
-<img src="https://raw.githubusercontent.com/cranberrygame/cordova-plugin-payment-iap/master/doc/android2.png">
-<img src="https://raw.githubusercontent.com/cranberrygame/cordova-plugin-payment-iap/master/doc/android3.png">
+- Be sure you are logged in to a Google Developer Account on your device.
 
-## iOS ##
-```c
-//accept paid agreement if you are adding your first app on iOS (contributed by tabrez)
+- Be sure to use a real device (not emulator).
 
-//add in app product (nonconsumable)
-itunesconnect - Manage Your Apps - [specific app] - Manage In-App Purchases - Create New - Non Consumable - Select - Reference Name: testapp_removeads, Product ID: testapp_removeads - 언어 추가 - 언어: English, Display Name : Remove Ads, Description: You can purchase remove ads by tapping "Remove Ads" button. And you can also restore previous purchases by tapping "Restore" button. - Screenshot for Review (screen shot where "Remove Ads" button and "Restore" button exist)
 
-//add in app product (consumable)
-itunesconnect - Manage Your Apps - [specific app] - Manage In-App Purchases - Create New - Consumable - Select - Reference Name: testapp_coinpack1, Product ID: testapp_coinpack1 - 언어 추가 - 언어: English, Display Name : Coin Pack1 (250 Coins), Description: Coin Pack1 (250 Coins) - Screenshot for Review (screen shot where PurchaseConsumablePack button exists)
+## Purchase Flow
 
-//add in app product (consumable)
-itunesconnect - Manage Your Apps - [specific app] - Manage In-App Purchases - Create New - Consumable - Select - Reference Name: testapp_coinpack2, Product ID: testapp_coinpack2 - 언어 추가 - 언어: English, Display Name : Coin Pack2 (750 Coins), Description: Coin Pack2 (750 Coins) - Screenshot for Review (screen shot where PurchaseConsumablePack button exists)
+![image](purchase_flow.gif)
 
-//add in app product (consumable)
-itunesconnect - Manage Your Apps - [specific app] - Manage In-App Purchases - Create New - Consumable - Select - Reference Name: testapp_coinpack3, Product ID: testapp_coinpack3 - 언어 추가 - 언어: English, Display Name : Coin Pack3 (2250 Coins), Description: Coin Pack3 (2250 Coins) - Screenshot for Review (screen shot where PurchaseConsumablePack button exists)
+## JavaScript APIs
 
-cf)Screenshot for Review (Screenshots must be 960x640, 960x600, 640x960, 640x920, 1136x640, 1136x600, 640x1136, 640x1096, 2208x1242, 1242x2208, 1334x750, 750x1334, 1024x768, 1024x748, 768x1024, 768x1004, 2048x1536, 2048x1496, 1536x2048 or 1536x2008 pixels.)
+### getPending(Function success, Function failure)
 
-iOS Simulator - Hardware - Device - iPhone 6 Plus
+This method for iOS fetches any pending verification products (which have not been consumed yet).
 
-Screen capture (1242x2208)
+This method for Android fetches any pending consumption products.
 
-See doc/iOS Simulator Screen Shot_iPhone 6 Plus.png
-```
+- *Return* success with an Array of one or more Objects containing product information that can be used when consuming or verification.
+	e.g.
 
-should_agree_with_paid_applications_contracts
-<img src="https://raw.githubusercontent.com/cranberrygame/cordova-plugin-payment-iap/master/doc/contracts1.png">
-<img src="https://raw.githubusercontent.com/cranberrygame/cordova-plugin-payment-iap/master/doc/contracts2.png">
+		[
+			{
+				platform: "ios" or "android",
+				orderId: transaction identifier for iOS or order id for Android,
+				receipt: purchaseToken or ios receipt as String,
+				productId: "sword001",
+				packageName: "jp.wizcorp.game"
+			},
+			{
+				...
+			} ...
+		]
 
-In app purchase screenshot for review (iPhone 6 Plus)
-<img src="https://raw.githubusercontent.com/cranberrygame/cordova-plugin-payment-iap/master/doc/in_app_purchase_screenshot_for_review_iphone_6_plus.png">
+- *Return* failure with error 
 
-## Wp8 ##
-```c
-//add in app product (nonconsumable)
-Windows Phone Dev Center - Dashboard - select Windows Phone Store - Apps - [specific app] - Products - Add in-app product - In-app product properties - In-app product alias: testapp_removeads, Product identifier: testapp_removeads, Product type: Durable, Product lifetime: Forever - Save -
-Description - Product title: Remove Ads, Description: Remove ads, Product image: (300x300 px PNG file) - Save - Submit
+### restoreAll(Function success, Function failure)
 
-//add in app product (consumable)
-Windows Phone Dev Center - Dashboard - select Windows Phone Store - Apps - [specific app] - Products - Add in-app product - In-app product properties - In-app product alias: testapp_coinpack1, Product identifier: testapp_coinpack1, Product type: Consumable - Save -
-Description - Product title: Coin Pack1 (250 Coins), Description: Coin Pack1 (250 Coins), Product image: (300x300 px PNG file) - Save - Submit
+Get a list of non-consumable item receipts / purchaseTokens 
+								
+iOS should internally... 
+Check the call the code below return any owned non consumables etc.
+				
+`[[SKPaymentQueue defaultQueue] addTransactionObserver:self];`
+`[[SKPaymentQueue defaultQueue] restoreCompletedTransactions];`		
+then `(void)paymentQueueRestoreCompletedTransactionsFinished`
 
-//add in app product (consumable)
-Windows Phone Dev Center - Dashboard - select Windows Phone Store - Apps - [specific app] - Products - Add in-app product - In-app product properties - In-app product alias: testapp_coinpack2, Product identifier: testapp_coinpack2, Product type: Consumable - Save -
-Description - Product title: Coin Pack2 (750 Coins), Description: Coin Pack2 (750 Coins), Product image: (300x300 px PNG file) - Save - Submit
-
-//add in app product (consumable)
-Windows Phone Dev Center - Dashboard - select Windows Phone Store - Apps - [specific app] - Products - Add in-app product - In-app product properties - In-app product alias: testapp_coinpack3, Product identifier: testapp_coinpack3, Product type: Consumable - Save -
-Description - Product title: Coin Pack3 (2250 Coins), Description: Coin Pack3 (2250 Coins), Product image: (300x300 px PNG file) - Save - Submit
-
-ing
-//Get YOUR_APP_ID from Windows Phone Dev Center and put it in "your wp8 project - Properties - WMAppManifest.xml - Packaging - Product ID"
-Windows Phone Dev Center - Dashboard - select Windows Phone Store - Apps - [specific app] - Details - App ID: YOUR_APP_ID
-```
-
-# API #
-```javascript
-
-var androidApplicationLicenseKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtrOQsWiUYfQ65MjUam2zu2DgoBkOsaoelFQHWzRkAT+KHr1xPIOF5JUeQs/XWtNjRI4pavBrRveB3xnoKE+WxvILh4N+3Kl11/i0r9B6/LBae8V8WZpArEIIvh3rgowDGTO0B6sfWO71iP9EStmwziBI4sDOMuPensBSmj8bxj3hhNEzyRJvQbybdNgAD2xoy55+S0kgLHE3PbZwqogJf1pPIGSmhC2SXSrMXoJzxeMxM8/hN7VoVj9VAJxzOE3zR9he9npiDWGLsPnAIXggUN9Ys0h80YjwRl7GHLP0P/itBo28w4+qOqz2E34SFFInAqX7evtrMu3AkfYcX+FPuQIDAQAB";
-var productIds = "testapp_removeads,testapp_coinpack1,testapp_coinpack2,testapp_coinpack3";
-var existing_purchases = [];
-var product_info = {};
+Android should internally call `Bundle getPurchases()` on IInAppBillingService.aidl Class
+This populates an Inventory object with all purchases ever made except the consumed purchases.
+					
+- *Return* success with an Array of one or many puchaseTokens (Android) or receipts (iOS)
+	* e.g. Android
+		`[ "puchase-token-string", ... ]` 
 		
-document.addEventListener("deviceready", function(){
+- *Return* failure with error 
 
-	window.iap.setUp(androidApplicationLicenseKey);
+(Developer should check any returned items with server APIs. If any items exist that are consumables, but have not been comsumed. The developer should call `consumePurchase()` because it is likely a previous purchase was not completed )
+					
 
-	//get all products' infos for all productIds
-	window.iap.requestStoreListing(productIds, function (result){
-	/*
-	[
+### makePurchase(String productId, Function success, Function failure)
+
+Make a purchase given a product Id (Quantity is not settable with the API, it is always 1 to be cross platform complete).
+					
+(ANDROID: A NON-CONSUMABLE CANNOT BE PURCHASED IF IT IS ALREADY OWNED [not-consumed], this applies to any product Id that has not been comsumed with `consumePurchse()`).
+					
+iOS should internally call `[SKMutablePayment paymentWithProductIdentifier:productId];`
+then add the payment to the payment queue `[[SKPaymentQueue defaultQueue] addPayment:payment]`
+When a transaction is complete the receipt is stored in the DB.
+					
+Android internally should call void `launchPurchaseFlow()` on IInAppBillingService.aidl Class
+Upon a successful purchase, the user’s purchase data is cached locally by Google Play’s In-app Billing service.
+
+** See security notes below **
+
+- *Return* success with transaction information
+
 		{
+			platform: "ios" or "android",
+			orderId: transaction identifier for iOS or order id for Android,
+			receipt: purchaseToken or ios receipt as String,
+			productId: "sword001",
+			packageName: "jp.wizcorp.game"
+		}
+	
+- *Return* failure with error
+
+On success do a receipt verification (if server API exists) gift the user.
+
+|  Android Verification API |
+| --------- |:--------:| ------:|
+|  URIs relative to *https://www.googleapis.com/androidpublisher/v1.1/applications*, unless otherwise note |
+| **GET**  |
+| / **[packageName]**/inapp/**[productId]**/purchases/**[token]** |
+| Checks the purchase and consumption status of an inapp item. |
+	
+
+|  iOS Verification API |
+| --------- |:--------:| ------:|
+|  Base64 encode the receipt and create a JSON object as follows: `{ "receipt-data" : "receipt bytes here" }`  
+| **POST**  |
+| https://buy.itunes.apple.com/verifyReceipt |
+| JSON is returned. If the value of the `status` key is 0, this is a valid receipt. |
+
+NOTE: Always verify your receipt for auto-renewable subscriptions first with the production URL; proceed to verify with the sandbox URL if you receive a 21007 status code. Following this approach ensures that you do not have to switch between URLs while your application is being tested or reviewed in the sandbox or is live in the App Store.
+			
+### consumePurchase(String or Array of productIds, Function success, Function failure)
+
+Consume the product for the purchaseId given.
+										
+iOS removes the item from it's local data store.
+					
+Android internally calls `int consumePurchase()` on IInAppBillingService.aidl Class
+		
+Upon a successful purchase, the user’s purchase data is cached locally by Google Play’s In-app Billing service.
+
+** See security notes below **
+
+- *Return* success
+- *Return* failure with error 
+					
+
+### getProductDetail(String productId or Array of productIds, Function success, Function failure)
+
+Get the details for a single productId or for an Array of productIds.
+					
+iOS should internally call `[[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers]`
+
+Android should internally call `queryInventoryAsync()` on the helper class which should call `getSkuDetails()`.
+					
+- Return success with Object containing country, currency code and key/value map of products
+
+NB: Currently on Android the country code can not be guessed and as such, it is not returned.
+
+```json
+{
+	"country": "GB",
+	"currency": "GBP",
+	"products": {
+		"sword001": {
 			"productId": "sword001",
-			"title": "Sword of Truths",
+			"name": "Sword of Truths",
+			"description": "Very pointy sword. Sword knows if you are lying, so don't lie.",
 			"price": "Formatted price of the item, including its currency sign.",
-			"description": "Very pointy sword. Sword knows if you are lying, so don't lie."
+			"priceMicros": "Price in micro-units as an unformatted string, where 1,000,000 micro-units equal one unit of the currency."
 		},
-		{
+		"shield001": {
 			"productId": "shield001",
-			"title": "Shield of Peanuts",
+			"name": "Shield of Peanuts",
+			"description": "A shield made entirely of peanuts.",
 			"price": "Formatted price of the item, including its currency sign.",
-			"description": "A shield made entirely of peanuts."
+			"priceMicros": "Price in micro-units as an unformatted string, where 1,000,000 micro-units equal one unit of the currency."
 		}
-	]
-	*/
-	//alert(JSON.stringify(result));
-
-		for (var i = 0 ; i < result.length; ++i){
-			var p = result[i];
-			
-			product_info[p["productId"]] = { title: p["title"], price: p["price"] };			
-			
-			alert("productId: "+p["productId"]);
-			alert("title: "+p["title"]);
-			alert("price: "+p["price"]);
-		}
-	}, function (error){
-		alert("error: "+error);
-	});
-}, false);
-	
-function purchaseProduct(productId) {
-	
-	//purchase product id, put purchase product id info into server.
-	window.iap.purchaseProduct(productId, function (result){
-		alert("purchaseProduct");
-	}, 
-	function (error){
-		alert("error: "+error);
-	});
+	}
 }
+```
 
-function consumeProduct(productId) {
-	//consume product id, throw away purchase product id info from server.
-	window.iap.consumeProduct(productId, function (result){
-		alert("purchaseProduct");
-	}, 
-	function (error){
-		alert("error: "+error);
-	});	
-}
+or empty `{ }` if productIds was an empty array.
 
-function restorePurchases() {
-	//get user's purchased product ids which purchased before and not cunsumed.
-	window.iap.restorePurchases(function (result){
-		for (var i = 0 ; i < result.length; ++i){
-			var p = result[i];
-			
-			if (self.existing_purchases.indexOf(p['productId']) === -1)
-				self.existing_purchases.push(p['productId']);			
+- *Return* failure with error as the only argument
 
-			alert("productId: "+p['productId']);
-		}
-	}, 
-	function (error){
-		alert("error: "+error);
-	});
-}
+#### Security notes (Android)
 
-function hasProduct = function (productId){
-	return existing_purchases.indexOf(productId) !== -1;
-};
+*** You (the developer) should verify that the orderId is a unique value that you have not previously processed, and the developerPayload string matches the token that you sent previously with the purchase request. As a further security precaution, you should perform the verification on your own secure server. ***
 	
-```
-# Examples #
-<a href="https://github.com/cranberrygame/cordova-plugin-payment-iap/blob/master/example/basic/index.html">example/basic/index.html</a><br>
+### Error Handling
 
-# Test #
+Failure callbacks return an error as String. See the following error table:
 
-[![](http://img.youtube.com/vi/xXrVb8E8gMM/0.jpg)](https://www.youtube.com/watch?v=xXrVb8E8gMM&feature=youtu.be "Youtube")
+|Error String|Description|
+|:----------:|---------|
+|cannotPurchase		|Purchasing is not possible for the following reasons; <br /> - purchase is being made on a simulator or emulator, <br /> - the device has been identified as rooted. |
+|invalidClient		| Indicates that the client is not allowed to perform the attempted action. |
+|userCancelled		| Indicates that the user cancelled a payment request. |
+|invalidPayment		| Indicates that one of the payment parameters was not recognized.|
+|unauthorized		| Indicates that the user is not allowed to authorise payments (e.g. parental lock).|
+|unknownProductId	| Indicates that the requested product is not available or could not be found in the store. |
+|alreadyOwned		| [Android only] This item has already been bought. It cannot be bought again without consuming it first. |
 
-You can also run following test apk.
-https://dl.dropboxusercontent.com/u/186681453/pluginsforcordova/iap/apk.html
+======
+Ref Links
+======
 
-## Android ##
-```c
-//publish as alpha test (recommend) or beta test instead of production.
-google play developer console - [specific app] - APK - Alpha test - Upload as alpha test - Drag and drop apk and publish now as alpha test.
+### iOS
 
-//add test user for iap
-google play developer console - configuration - account detail - testing accounts (google play account)
+[http://docs.xamarin.com/guides/ios/application_fundamentals/in-app_purchasing/part_4_-_purchasing_non-consumable_products/](http://docs.xamarin.com/guides/ios/application_fundamentals/in-app_purchasing/part_4_-_purchasing_non-consumable_products/)
 
-//add test community for alpha test or beta test download
-google play developer console - 
-All applications - 
-[specific app] - 
-APK -
-Alpha testers - 
-Manage list of testers - 
-Add Google groups or Google+ community: https://plus.google.com/communities/xxx (if you want make Google+ Community, go to this: https://plus.google.com/communities) -
-Add - 
-Let test user download and install apk from this url: https://play.google.com/apps/testing/YOUR_PACKAGE (invite test user in your Google+ community, wait until this url is available, take hours)
+[https://github.com/Wizcorp/phonegap-plugin-inAppPurchaseManager/blob/v3.0/platforms/ios/HelloCordova/Plugins/InAppPurchaseManager/InAppPurchaseManager.m](https://github.com/Wizcorp/phonegap-plugin-inAppPurchaseManager/blob/v3.0/platforms/ios/HelloCordova/Plugins/InAppPurchaseManager/InAppPurchaseManager.m)
 
-test for iap requires real device.
+[http://stackoverflow.com/a/17734756/2206385](http://stackoverflow.com/a/17734756/2206385)
 
-cf)caution 
+### Android
 
-if you want to test with local apk, use signed and exactly same version apk uploaded in google play store.
+[http://developer.android.com/google/play/billing/api.html](http://developer.android.com/google/play/billing/api.html)
 
-cf)error message
+[http://developer.android.com/training/in-app-billing/purchase-iab-products.html](http://developer.android.com/training/in-app-billing/purchase-iab-products.html)
 
-the item you requested is not available for purchase
-==> In-activated Product Id, so Activate Product Id
-http://stackoverflow.com/questions/13117081/the-item-you-requested-is-not-available-for-purchase
-```
+[https://github.com/poiuytrez/AndroidInAppBilling/blob/master/v3/src/android/com/smartmobilesoftware/util/IabHelper.java](https://github.com/poiuytrez/AndroidInAppBilling/blob/master/v3/src/android/com/smartmobilesoftware/util/IabHelper.java)
 
-## iOS ##
-```c
-test doest not requires publishing.
-test requires real device.
+[https://github.com/poiuytrez/AndroidInAppBilling/blob/master/v3/src/android/com/smartmobilesoftware/inappbilling/InAppBillingPlugin.java](https://github.com/poiuytrez/AndroidInAppBilling/blob/master/v3/src/android/com/smartmobilesoftware/inappbilling/InAppBillingPlugin.java)
 
-//if you don't want to spend real money buying your own app, setup your test users and buy with test account.
-//if you alreay logged in with other account, first log out (Setting - iTunes & App Store - Apple ID: xxx@xxx.com - Log out)
-itunesconnect - Users and Roles - Sandbox Testers - +
-
-//Xdk
-XDK PROJECTS - projectname - BUILD SETTINGS - iOS - Provisioning Profile: production, Production Provisioning File: YOUR_PROVISION_FILE (.mobileprovision)
-BUILD - CORVOVA 3,X HYBRID MOBILE APP PLATFORMS - iOS - Build - iOS CERTIFICATE - Edit - UPLOAD CERTIFICATE: YOUR_CERTIFICATE_FILE (.cer) - Go to Next Step - Download .ipa file - Drag it to the itunes and run it on the device
-
-//Xcode
-Select "Xcode - iPhone" (Ad Hoc)
-- Product
-- Run
-```
-<img src="https://raw.githubusercontent.com/cranberrygame/cordova-plugin-payment-iap/master/doc/tester1_iossandbox1.png">
-<img src="https://raw.githubusercontent.com/cranberrygame/cordova-plugin-payment-iap/master/doc/tester1_iossandbox2.png">
-<img src="https://raw.githubusercontent.com/cranberrygame/cordova-plugin-payment-iap/master/doc/tester2_testflight.png">
-
-## Wp8 ##
-```c
-```
-
-# Useful links #
-
-Cordova Plugins<br>
-http://cranberrygame.github.io?referrer=github
-
-# Credits #
+[https://developers.google.com/android-publisher/v1_1/](https://developers.google.com/android-publisher/v1_1/)
